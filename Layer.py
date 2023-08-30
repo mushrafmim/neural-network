@@ -4,9 +4,10 @@ from Perceptron import Perceptron
 
 class Layer:
 
-    def __init__(self, n_neurons: int, n_inputs: int) -> None:
+    def __init__(self, n_neurons: int, n_inputs: int, activation: str) -> None:
         self.perceptrons: Perceptron = list()
         self.n_neurons: int = n_neurons
+        self.activation = activation
 
         for _ in range(n_neurons):
 
@@ -24,5 +25,11 @@ class Layer:
         for i in range(self.n_neurons):
             output_v[i] = self.perceptrons[i].predict(input_v)
             print(f"\tIn Perceptron {i + 1}")
+
+        if self.activation == "relu":
+            output_v = np.max(output_v)
+        elif self.activation == "softmax":
+            output_v = np.exp(output_v)
+            output_v = np.divide(output_v / sum(output_v))
 
         return output_v

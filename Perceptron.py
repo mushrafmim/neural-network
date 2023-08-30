@@ -7,5 +7,5 @@ class Perceptron:
         self.w = w
         self.b = b
 
-    def predict(self, x) -> float:
-        return max(0, np.dot(self.w, x) + self.b)
+    def calculate(self, x: np.ndarray) -> float:
+        return np.dot(self.w, x) + self.b
