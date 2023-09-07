@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from Perceptron import Perceptron
 
@@ -13,7 +14,7 @@ class Layer:
 
             self.perceptrons.append(
                 Perceptron(
-                    w=np.random.uniform(low=0.0, high=1.0, size=(n_inputs,)),
+                    w=np.random.uniform(low=-1.0, high=1.0, size=(n_inputs)),
                     b=np.random.random()
                 )
             )

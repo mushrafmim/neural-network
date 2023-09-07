@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from Layer import Layer
 
@@ -16,4 +17,20 @@ class NN:
             print(f"In Layer {i+1}")
             output = self.layers[i].forward_pass(output)
 
-        return output
+        print(output)
+
+        output = np.exp(output)
+
+        return output / sum(output)
+
+    def find_error(self, Y_predicted, Y_i):
+        cross_entropy_loss = np.dot(np.log(Y_predicted), Y_i)
+        return cross_entropy_loss
+
+    def train(self, X, Y):
+
+        for i in range(len(X)):
+            X_i = X[i]
+            Y_i = Y[i]
+
+            Y_predicted = self.predict(X_i)

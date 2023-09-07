@@ -1,2 +1,5 @@
-# neural-network
-Custom Implementation of a Neural Network
+# CS3631 - Deep Neural Networks
+
+## Assignment 01
+
+
