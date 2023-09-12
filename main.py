@@ -14,6 +14,4 @@ if __name__ == "__main__":
     # random_input = np.random.choice([-1, 1], size=14)
     data_point = [-1, 1, 1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1]
 
-    print(nn.backpropogate(data_point, [0, 0, 1, 0]))
-
-    # print(nn.predict(data_point))
+    print(nn.backpropogate(data_point, [0, 0, 0, 1]))

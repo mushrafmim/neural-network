@@ -7,6 +7,8 @@ class NN:
 
     def __init__(self, layers: list[Layer]) -> None:
         self.layers: list[Layer] = layers
+        self.dWs = list()
+        self.dbs = list()
 
         for i in range(1, len(self.layers)):
             self.layers[i].set_weights_and_biases(
@@ -23,12 +25,6 @@ class NN:
                 output)
 
         return output
-
-    # def find_derivatives(self, output):
-    #     for i in output:
-    #         for j in range(len(self.layers), 0, -1):
-    #             if j == len(self.layers):
-    #                 self.layers[j].find_derivative(output[i])
 
     def find_error(self, Y_predicted, Y_i):
         cross_entropy_loss = np.dot(np.log(Y_predicted), Y_i)
@@ -96,11 +92,39 @@ class NN:
     def backpropogate(self, X, Y):
 
         Y_pred = self.predict(X)
+        dZ = Y_pred - Y
 
-        Y_derivative = Y_pred - Y
+        dW = self.layers[-2].find_dW(dZ)
 
-        for j in range(len(self.layers) - 1, 0, -1):
-            current_layer = self.layers[j]
-            derivative = current_layer.find_derivative(Y_derivative)
+        self.dWs.append(dW)
+        self.dbs.append(dZ)
 
-            print(derivative)
+        for i in range(len(self.layers) - 2, 0, -1):
+            relu_der = self.layers[i].relu_derivative()
+
+            W = self.layers[i + 1].Weights.T
+
+            dZ = (W.dot(dZ)) * relu_der
+
+            dW = self.layers[i].find_dW(dZ)
+
+            self.dWs.append(dW)
+            self.dbs.append(dZ)
+
+        self.dWs.reverse()
+        self.dbs.reverse()
+
+        self.write_dbs()
+        self.write_dws()
+
+    def write_dbs(self):
+        with open('task_1/dbs.csv', 'w') as f:
+            writer = csv.writer(f)
+            writer.writerows(self.dbs)
+
+    def write_dws(self):
+        with open('task_1/dws.csv', 'w') as f:
+            writer = csv.writer(f)
+
+            for row in self.dWs:
+                writer.writerows(row)

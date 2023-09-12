@@ -6,10 +6,14 @@ from perceptron import Perceptron
 class Layer:
 
     def __init__(self, n_neurons: int, n_inputs: int, activation: str) -> None:
+        self.input_v = None
         self.perceptrons: Perceptron = list()
         self.n_neurons: int = n_neurons
         self.activation = activation
-        self.output = np.empty(n_neurons)
+        self.Z = None
+        self.output = None
+        self.Weights = None
+        self.biases = None
 
         for _ in range(n_neurons):
 
@@ -20,13 +24,16 @@ class Layer:
                 )
             )
 
-    def find_derivative(self, derivative):
-        return self.output[:, np.newaxis] * derivative
-        print(derivative)
-        row = derivative.shape[0]
-        return np.dot(self.output.reshape(self.n_neurons, 1), derivative.reshape(1, row))
+    def relu_derivative(self):
+        return np.where(self.output > 0, 1.0, 0.0)
+
+    def find_dW(self, derivative, type="hidden"):
+
+        return np.array(self.input_v)[:, np.newaxis] * derivative
 
     def set_weights_and_biases(self, weights: np.array, biases: np.array):
+        self.Weights = weights
+        self.biases = biases
 
         for i in range(self.n_neurons):
             self.perceptrons[i].W = weights[i]
@@ -34,16 +41,19 @@ class Layer:
 
     def forward_pass(self, input_v, input=False):
 
-        output_v = np.empty(self.n_neurons)
+        self.input_v = input_v
+
+        output_v = np.empty(self.n_neurons, dtype=np.float64)
 
         for i in range(self.n_neurons):
             output_v[i] = self.perceptrons[i].calculate(input_v)
+
+        self.Z = output_v.copy()
 
         if self.activation == "relu":
             output_v = np.maximum(output_v, 0)
 
         elif self.activation == "softmax":
-            print(output_v)
             output_v = np.exp(output_v)
             output_v = np.divide(output_v, sum(output_v))
 

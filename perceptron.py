@@ -12,6 +12,6 @@ class Perceptron:
         output = np.dot(self.W, X) + self.b
 
         return output
-    
+
     def find_derivative(self, derivative):
         return derivative / self.W
